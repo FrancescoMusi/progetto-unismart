@@ -56,7 +56,12 @@ while True:
     elif choice == 6:
         clear()
         
-        matricola = getMatricola(rowsMatricole)
+        correctName = False
+        while not correctName:
+            matricola = getMatricola(rowsMatricole)
+            correctName = checkData("{} {} è il nome corretto?".format(matricola[1], matricola[2]))
+       
+       
         printExams(matricola, rowsEsami, rowsMaterie)
 
         #ciclo inserimento esame
