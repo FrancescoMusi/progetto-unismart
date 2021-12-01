@@ -28,8 +28,8 @@ def stampaMatricole(rowsMatricole):
 #funzione che stampa una matricola chiedendo in input l'id
 def stampaMatricola(rowsMatricole):
     clear()  
-    name = getName(rowsMatricole)
-    print("\n- cognome: {}\n- nome: {}".format(name[0], name[1]))
+    name = getMatricola(rowsMatricole)
+    print("\n- cognome: {}\n- nome: {}".format(name[1], name[2]))
     stop()
 
 
@@ -71,23 +71,23 @@ def InserisciMatricola(rowsMatricole, fileMatricole):
 
 
 
-def PagaEsami(rowsMatricole, rowsEsami, fileEsami):
+def PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami):
     clear()
 
     correctName = False
     while not correctName:
-        name = getName(rowsMatricole)
-        examsToDo = getExams(name[2], rowsEsami, "to do")
-        correctName = checkData("{} {} è la matricola di cui vuoi pagare gli esami?".format(name[0], name[1]))
+        matricola = getMatricola(rowsMatricole)
+        examsToDo = getExams(matricola[0], rowsEsami, "to do")
+        correctName = checkData("{} {} è la matricola di cui vuoi pagare gli esami?".format(matricola[1], matricola[2]))
 
     
-    x = printExams(name, rowsEsami, "to pay") #solo se non ci sono esami da stampare ritorna False
+    examsToPay =  printExams(matricola, rowsEsami, rowsMaterie, "to pay") #solo se non ci sono esami da stampare ritorna False
 
-    if not x:
+    if not examsToPay:
         stop()
     
     else: 
-        print("\nQuali esmai vuoi pagare? scrivi una lista separata da virgole (es: \"1, 3\")")
+        print("\nQuali esami vuoi pagare? scrivi una lista separata da virgole (es: \"1, 3\")")
         
 
         #ciclo che fa inserire una lista scritta correttamente
@@ -101,21 +101,21 @@ def PagaEsami(rowsMatricole, rowsEsami, fileEsami):
                 toPay = toPay.split(",")
                 totalPrice = 0
 
-                print(toPay)
-                print(examsToDo)
+                # print(toPay)
+                # print(examsToDo)
                 stop()
             
                 #ciclo che fa inserire una lista con numeri corretti.
-                for n in toPay:
+                for number in toPay:
                     for exam in examsToDo:
-                        if exam[0] == n-1: #[0] è l'indice dell'esame
+                        if int(exam[0]) == int(number): #[0] è l'indice dell'esame
                             totalPrice += int(exam[2]) #[2] è il prezzo dell'esame in questione
                     
                             
                         #riscrive le righe del file esami
-                        #for row in rowsEsami[1:]:
-                        #    if int(row[0]) == name[2] and row[1] == exam[1]: #se numero matricola e nome esame corrispondono
-                        #        row[3] = "True"
+                        for row in rowsEsami[1:]:
+                           if int(row[0]) == int(matricola[0]) and int(row[1]) == int(exam[1]): #se numero matricola e nome esame corrispondono
+                               row[3] = "True"
 
                 
                 print("\nPREZZO TOTALE: {}eur".format(totalPrice))
@@ -229,43 +229,48 @@ def checkData(message):
         else: 
             return False
 
+#funzione che trova il nome della materia
+def getNameMateria(id, rowsMaterie):
+    for row in rowsMaterie[1:]:
+        if int(row[0]) == id:
+            return row[1]
 
 
-def getName(rowsMatricole):
-    m = checkInt(input("Inserisci numero matricola: "))
-    lista = [] #[cognome, nome, matricola]
+def getMatricola(rowsMatricole):
+    id_matricola = checkInt(input("Inserisci numero matricola: "))
+    lista = [] #[matricola, cognome, nome]
     
     #trova nome e cognome
     userFound = False
     while not userFound:
         for row in rowsMatricole[1:]:
-            if int(row[0]) == m:
+            if int(row[0]) == id_matricola:
+                lista.append(id_matricola)
                 lista.append(row[1])
                 lista.append(row[2])
-                lista.append(m)
                 userFound = True
         
         if not userFound: 
-            m = checkInt(input("Utente non trovato, inserisci un numero diverso!\n"))
+            id_matricola = checkInt(input("Utente non trovato, inserisci un numero diverso!\n"))
 
     
     return lista 
 
 
 
-def getExams(m, rowsEsami, mode):
+def getExams(id_matricola, rowsEsami, mode):
     examsDone = []
     examsToDo = []
     #[[indice1, esame1, costo1, pagato1, voto1, data1], [indice2, esame2, costo2, pagato2, voto2, data2],...]
     #trova lista esami, se non ci sono lista = []
     index = 1 
     for row in rowsEsami[1:]:
-        if int(row[0]) == m:
-            if row[4] == "" and row[5] == "":
+        if int(row[0]) == id_matricola:
+            if row[4] == " " and row[5] == " ":
                 examsToDo.append([index, row[1], row[2], row[3]])
                 index += 1
             else:
-                examsDone.append([index, row[1], row[2], row[3]])
+                examsDone.append([index, row[1], row[2], row[3], row[4], row[5]])
                 index += 1
     
     if mode == "done":
@@ -290,13 +295,13 @@ def getResults(m, rowsEsiti):
 
 
 
-def printExams(name, rowsEsami, option=""): #argomento facoltativo
+def printExams(matricola, rowsEsami, rowsMaterie,  option=""): #argomento facoltativo
     
-    examsDone = getExams(name[2], rowsEsami, "done")
-    examsToDo = getExams(name[2], rowsEsami, "to do")
+    examsDone = getExams(matricola[0], rowsEsami, "done")
+    examsToDo = getExams(matricola[0], rowsEsami, "to do")
     
     clear()
-    print("{} {}\n".format(name[0], name[1]))
+    print("{} {}\n".format(matricola[1], matricola[2]))
 
     #stampa solo quelli da pagare
     if option == "to pay":
@@ -305,15 +310,15 @@ def printExams(name, rowsEsami, option=""): #argomento facoltativo
             print("Non risultano esami da sostenere!\n")
         else:
             toPay = False #se ci sono esami da pagare
-            c = 1 #contatore perchè gli esami da pagare non sono in fila
+            counter = 1 #contatore perchè gli esami da pagare non sono in fila
             for exam in examsToDo: 
                 if exam[3].lower() == "false": #casella contenente pagato True / False
-                    print("{}. {} (costo: {}, NON pagato)".format(c, exam[1], exam[2]))
+                    print("{}. {} (costo: {}, NON pagato)".format(counter, getNameMateria(int(exam[1]), rowsMaterie), exam[2]))
                     toPay = True
-                    c += 1
+                    counter += 1
 
             if not toPay:
-                print("Non ci sono esmai da pagare!")
+                print("Non ci sono esami da pagare!")
                 return False #così posso usare la condizione "se non ci sono esami da stampare"
             else:
                 return True
@@ -321,15 +326,15 @@ def printExams(name, rowsEsami, option=""): #argomento facoltativo
 
     #stampa tutti gli esami
     else:
-        print("Esami da sostenre:")
+        print("Esami da sostenere:")
         if examsToDo == []:
             print("Non risultano esami da sostenere!")
         else:
             for exam in examsToDo: 
                 if exam[3] == "True": #casella contenente pagato True / False
-                    print("- {} (costo: {}, pagato)".format(exam[1], exam[2]))
+                    print("- {} (id: {}, costo: {}, pagato)".format(getNameMateria(int(exam[1]), rowsMaterie), int(exam[1]), exam[2]))
                 else:
-                    print("- {} (costo: {}, NON pagato)".format(exam[1], exam[2]))
+                    print("- {} (id: {}, costo: {}, NON pagato)".format(getNameMateria(int(exam[1]), rowsMaterie), int(exam[1]), exam[2]))
 
 
         print("\nEsami sostenuti:")
@@ -337,7 +342,7 @@ def printExams(name, rowsEsami, option=""): #argomento facoltativo
             print("Non risultano esami sostenuti!\n")
         else:
             for exam in examsDone:
-                print("- {}, esito: {}, data: {}".format(exam[1], exam[2], exam[3]))
+                print("- {}, esito: {}, data: {}".format(getNameMateria(int(exam[1]), rowsMaterie), exam[4], exam[5]))
 
 
 

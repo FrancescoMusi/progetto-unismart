@@ -1,10 +1,9 @@
-import csv
-import os
 from datetime import date
 from functions import *
 
 fileMatricole = './AnagraficaMatricole.csv'
 fileEsami = './Esami.csv'
+fileMaterie = './Materie.csv'
 
 
 err = False
@@ -21,6 +20,7 @@ while True:
     #dentro al while perchè se aggiungo dati devo leggerli
     rowsMatricole = readFile(fileMatricole)
     rowsEsami = readFile(fileEsami)
+    rowsMaterie = readFile(fileMaterie)
 
 
     #fine del programma
@@ -40,8 +40,8 @@ while True:
     #ricerca esami per numero di matricola
     elif choice == 3:
         clear()
-        name = getName(rowsMatricole)
-        printExams(name, rowsEsami)
+        matricola = getMatricola(rowsMatricole)
+        printExams(matricola, rowsEsami, rowsMaterie)
         stop()
 
     #inserimento nuovo studente
@@ -50,42 +50,42 @@ while True:
           
     #pagamento esami
     elif choice == 5:
-        PagaEsami(rowsMatricole, rowsEsami, fileEsami)
+        PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami)
 
     #aggiungere esito esame
     elif choice == 6:
         clear()
         
-        name = getName(rowsMatricole)
-        printExams(name, rowsEsami)
+        matricola = getMatricola(rowsMatricole)
+        printExams(matricola, rowsEsami, rowsMaterie)
 
         #ciclo inserimento esame
         correctExam = False
         while not correctExam:
-            esame = ""
-            esito = -1 #un esito possibile non è mai negativo
+            id_esame = 0
+            esito = 0 #un esito possibile non è mai negativo
 
-            #controlla che il nome esame non sia vuoto
-            while esame == "":
-                esame = checkInt(input("Numero esame: "))
+            #controlla che l'id esame non sia vuoto
+            while id_esame == 0:
+                id_esame = checkInt(input("Numero esame: "))
                 clear()
 
             #controlla che il voto non sia vuoto
-            while esito < 0: 
+            while esito == 0: 
                 esito = checkInt(input("Esito: "))
                 clear()
-
-    
+            correctExam = True
             print()
 
-        row = [name[2], esame, esito, date.today()]
-
-        appendFile(fileEsiti, [row])
+        for row in rowsEsami[1:]:
+            if int(row[0]) == int(matricola[0]) and int(row[1]) == id_esame:
+                row[4] = esito
+                row[5] = date.today()
+        
+        writeFile(fileEsami, rowsEsami)
+        # row = [matricola[0], esame, esito, date.today()]6
         print("Esame inserito correttamente!")
         stop()
-
-
-
 
     else: 
         choice = checkInt(input("Inserisci un opzione accettabile!\n"))
