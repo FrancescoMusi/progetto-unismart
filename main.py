@@ -83,9 +83,10 @@ while True:
                 row[5] = date.today()
         
         writeFile(fileEsami, rowsEsami)
-        # row = [matricola[0], esame, esito, date.today()]6
+        # row = [matricola[0], esame, esito, date.today()]
         print("Esame inserito correttamente!")
         stop()
+
 
     else: 
         choice = checkInt(input("Inserisci un opzione accettabile!\n"))

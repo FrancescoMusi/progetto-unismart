@@ -345,7 +345,7 @@ def printExams(matricola, rowsEsami, rowsMaterie,  option=""): #argomento facolt
             print("Non risultano esami sostenuti!\n")
         else:
             for exam in examsDone:
-                print("- {}, esito: {}, data: {}".format(getNameMateria(int(exam[1]), rowsMaterie), exam[4], exam[5]))
+                print("- {} (esito: {}, data: {})".format(getNameMateria(int(exam[1]), rowsMaterie), exam[4], exam[5]))
 
 
 
