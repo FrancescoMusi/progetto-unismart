@@ -81,7 +81,7 @@ def PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami):
         correctName = checkData("{} {} è la matricola di cui vuoi pagare gli esami?".format(matricola[1], matricola[2]))
 
     
-    examsToPay =  printExams(matricola, rowsEsami, rowsMaterie, "to pay") #solo se non ci sono esami da stampare ritorna False
+    examsToPay =  printExams(matricola, rowsEsami, rowsMaterie, "to pay")
 
     if not examsToPay:
         stop()
@@ -89,6 +89,13 @@ def PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami):
     else: 
         print("\nQuali esami vuoi pagare? scrivi una lista separata da virgole (es: \"1, 3\")")
         
+        #ciclo che crea una lista di esami da pagare numerati
+        examsToPay = []
+        c = 1
+        for exam in examsToDo:
+            if exam[3].lower() == "false":
+                examsToPay.append([c, exam[1], exam[2], exam[3]])
+                c += 1
 
         #ciclo che fa inserire una lista scritta correttamente
         while True:
@@ -100,22 +107,18 @@ def PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami):
             try:
                 toPay = toPay.split(",")
                 totalPrice = 0
-
-                # print(toPay)
-                # print(examsToDo)
-                stop()
             
                 #ciclo che fa inserire una lista con numeri corretti.
                 for number in toPay:
-                    for exam in examsToDo:
+                    for exam in examsToPay:
                         if int(exam[0]) == int(number): #[0] è l'indice dell'esame
                             totalPrice += int(exam[2]) #[2] è il prezzo dell'esame in questione
                     
                             
-                        #riscrive le righe del file esami
-                        for row in rowsEsami[1:]:
-                           if int(row[0]) == int(matricola[0]) and int(row[1]) == int(exam[1]): #se numero matricola e nome esame corrispondono
-                               row[3] = "True"
+                    #riscrive le righe del file esami
+                    for row in rowsEsami[1:]:
+                        if int(row[0]) == int(matricola[0]) and int(row[1]) == int(exam[1]): #se numero matricola e nome esame corrispondono
+                            row[3] = "True"
 
                 
                 print("\nPREZZO TOTALE: {}eur".format(totalPrice))
