@@ -62,35 +62,46 @@ while True:
             correctName = checkData("{} {} è il nome corretto?".format(matricola[1], matricola[2]))
        
        
-        printExams(matricola, rowsEsami, rowsMaterie)
+        examsToDoPayed = getExams(matricola[0], rowsEsami, "to do payed")
 
-        #ciclo inserimento esame
-        correctExam = False
-        while not correctExam:
-            id_esame = 0
-            esito = 0 #un esito possibile non è mai negativo
-
-            #controlla che l'id esame non sia vuoto
-            while id_esame == 0:
-                id_esame = checkInt(input("Numero esame: "))
-                clear()
-
-            #controlla che il voto non sia vuoto
-            while esito == 0: 
-                esito = checkInt(input("Esito: "))
-                clear()
-            correctExam = True
+        if examsToDoPayed == []:
+            print("Non risultano esmai registrabili!")
+            stop()
+        else:
+            printExams(matricola, rowsEsami, rowsMaterie, "payed")
             print()
 
-        for row in rowsEsami[1:]:
-            if int(row[0]) == int(matricola[0]) and int(row[1]) == id_esame:
-                row[4] = esito
-                row[5] = date.today()
-        
-        writeFile(fileEsami, rowsEsami)
-        # row = [matricola[0], esame, esito, date.today()]
-        print("Esame inserito correttamente!")
-        stop()
+            #ciclo inserimento esame
+            correctExam = False
+            while not correctExam:
+                id_esame = 0
+                esito = 0 #un esito possibile non è mai negativo
+
+                #controlla che l'id esame non sia vuoto
+                while id_esame == 0:
+                    id_esame = checkInt(input("Numero esame: "))
+                    clear()
+
+                #controlla che il voto non sia vuoto
+                while esito == 0: 
+                    esito = checkInt(input("Esito: "))
+                    clear()
+                correctExam = True
+                print()
+
+
+            #id_esame è quello che inserisce l'utente, ma non corrisponde all'id della materia
+            id_materia = examsToDoPayed[id_esame-1][1]
+
+            for row in rowsEsami[1:]:
+                if int(row[0]) == int(matricola[0]) and int(row[1]) == int(id_materia):
+                    row[4] = esito
+                    row[5] = date.today()
+            
+            writeFile(fileEsami, rowsEsami)
+            # row = [matricola[0], esame, esito, date.today()]
+            print("Esame inserito correttamente!")
+            stop()
 
 
     else: 

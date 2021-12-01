@@ -1,9 +1,9 @@
 Matricola,IdMateria,Costo,Pagato,Voto,Data
 1,1,1000,True,21,2021-12-01
 2,2,900,True,30,2021-12-01
-3,3,1100,True, , 
+3,3,1100,True,26,2021-12-01
 4,4,1300,True, , 
 1,5,700,True, , 
-2,6,900,True, , 
-3,7,1250,True, , 
-4,8,980,True, , 
+2,6,900,False, , 
+3,7,1250,True,28,2021-12-01
+4,8,980,False, , 
