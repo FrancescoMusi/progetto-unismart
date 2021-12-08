@@ -17,12 +17,10 @@ while True:
     else: 
         err = False
     
-
-    #dentro al while perchè se aggiungo dati devo leggerli
+    #tutte le opzioni richiedono questi dati
     rowsMatricole = readFile(fileMatricole)
-    rowsEsami = readFile(fileEsami)
-    rowsMaterie = readFile(fileMaterie)
-    rowsCounter = readFile(fileCounter)
+    
+    
 
     #fine del programma
     if choice == 0:
@@ -41,22 +39,28 @@ while True:
     #ricerca esami per numero di matricola
     elif choice == 3:
         clear()
+        rowsEsami = readFile(fileEsami)
+        rowsMaterie = readFile(fileMaterie)
         matricola = getMatricola(rowsMatricole)
         printExams(matricola, rowsEsami, rowsMaterie)
         stop()
 
     #inserimento nuovo studente
     elif choice == 4:
+        rowsCounter = readFile(fileCounter)
         InserisciMatricola(fileMatricole, rowsCounter, fileCounter)
           
     #pagamento esami
     elif choice == 5:
+        rowsEsami = readFile(fileEsami)
+        rowsMaterie = readFile(fileMaterie)
         PagaEsami(rowsMatricole, rowsEsami, rowsMaterie, fileEsami)
 
     #aggiungere esito esame
     elif choice == 6:
         clear()
-        
+        rowsEsami = readFile(fileEsami)
+        rowsMaterie = readFile(fileMaterie)
         correctName = False
         while not correctName:
             matricola = getMatricola(rowsMatricole)
