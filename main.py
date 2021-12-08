@@ -4,6 +4,7 @@ from functions import *
 fileMatricole = './AnagraficaMatricole.csv'
 fileEsami = './Esami.csv'
 fileMaterie = './Materie.csv'
+fileCounter = './CounterMatricole.csv'
 
 
 err = False
@@ -21,7 +22,7 @@ while True:
     rowsMatricole = readFile(fileMatricole)
     rowsEsami = readFile(fileEsami)
     rowsMaterie = readFile(fileMaterie)
-
+    rowsCounter = readFile(fileCounter)
 
     #fine del programma
     if choice == 0:
@@ -46,7 +47,7 @@ while True:
 
     #inserimento nuovo studente
     elif choice == 4:
-        InserisciMatricola(rowsMatricole, fileMatricole)
+        InserisciMatricola(fileMatricole, rowsCounter, fileCounter)
           
     #pagamento esami
     elif choice == 5:

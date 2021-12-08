@@ -34,7 +34,7 @@ def stampaMatricola(rowsMatricole):
 
 
 #funzione che aggiunge una matricola al file matricole.csv
-def InserisciMatricola(rowsMatricole, fileMatricole):
+def InserisciMatricola(fileMatricole, rowsCounter, fileCounter):
     clear()
         
     correctName = False
@@ -60,11 +60,12 @@ def InserisciMatricola(rowsMatricole, fileMatricole):
     
     #fine ciclo inserimento nome
 
-
-    index = len(rowsMatricole) #prossimo numero matricola
+    index = int(rowsCounter[1][0]) + 1 #numero successivo del contatore
     row = [index, cognome, nome]
 
+
     appendFile(fileMatricole, [row])
+    writeFile(fileCounter, [["Counter"], [index]]) #aggiornamento contatore
 
     print("Matricola inserita correttamente!")
     stop()
